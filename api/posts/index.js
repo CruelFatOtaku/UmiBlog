@@ -34140,70 +34140,7 @@ export default async function (req: UmiApiRequest, res: UmiApiResponse) {
     default:
       res.status(405).json({ error: 'Method not allowed' })
   }
-}` }, { "path": "register", "id": "register", "file": "register.ts", "absPath": "/register", "__content": `import type { UmiApiRequest, UmiApiResponse } from "umi";
-import { PrismaClient } from '@prisma/client'
-import bcrypt from 'bcryptjs'
-import { signToken } from "@/utils/jwt"
- 
-export default async function (req: UmiApiRequest, res: UmiApiResponse) {
-  switch (req.method) {
- 
-    // \u5982\u679C\u5BF9\u8FD9\u4E2A\u8DEF\u5F84\u53D1\u8D77 POST \u8BF7\u6C42\uFF0C\u4EE3\u8868\u4ED6\u60F3\u8981\u6CE8\u518C\u4E00\u4E2A\u8D26\u53F7
-    case 'POST':
-      try {
- 
-        // \u5EFA\u7ACB\u4E00\u4E2A Prisma \u5BA2\u6237\u7AEF\uFF0C\u4ED6\u53EF\u4EE5\u5E2E\u52A9\u6211\u4EEC\u8FDE\u7EBF\u5230\u6570\u636E\u5E93
-        const prisma = new PrismaClient();
- 
-        // \u5728\u6570\u636E\u5E93\u7684 User \u8868\u4E2D\u5EFA\u7ACB\u4E00\u4E2A\u65B0\u7684\u6570\u636E
-        // const user = await prisma.user.create
-        // const user = await prisma.user.create({
-        //   data: {
-        //     email: req.body.email,
- 
-        //     // \u5BC6\u7801\u662F\u7ECF\u8FC7 bcrypt \u52A0\u5BC6\u7684
-        //     passwordHash: bcrypt.hashSync(req.body.password, 8),
-        //     name: req.body.name,
-        //     avatarUrl: req.body.avatarUrl
-        //   }
-        // });
-        const user = await prisma.user.upsert({
-          where: { email: req.body.email },
-          update: {},
-          create: {
-            email: req.body.email,
-            // \u5BC6\u7801\u662F\u7ECF\u8FC7 bcrypt \u52A0\u5BC6\u7684
-            passwordHash: bcrypt.hashSync(req.body.password, 8),
-            name: req.body.name,
-            avatarUrl: req.body.avatarUrl
-          },
-        })
-
- 
-        // \u628A\u5EFA\u7ACB\u6210\u529F\u7684\u7528\u6237\u6570\u636E\uFF08\u4E0D\u5305\u542B\u5BC6\u7801\uFF09\u548C JWT \u56DE\u4F20\u7ED9\u524D\u7AEF
-        res.status(201)
-          .setCookie('token', await signToken(user.id))
-          .json({ ...user, passwordHash: undefined })
- 
-        // \u5904\u7406\u5B8C\u8BF7\u6C42\u4EE5\u540E\u8BB0\u5F97\u65AD\u5F00\u6570\u636E\u5E93\u94FE\u63A5 
-        await prisma.$disconnect();
- 
-      } catch (e: any) {
- 
-        // \u5982\u679C\u53D1\u751F\u672A\u9884\u671F\u7684\u9519\u8BEF\uFF0C\u5C06\u5BF9\u5E94\u7684\u9519\u8BEF\u8BF4\u660E\u7684 Prisma \u6587\u6863\u53D1\u7ED9\u7528\u6237
-        res.status(500).json({
-          result: false,
-          // message: typeof e.code === 'string' ? 'https://www.prisma.io/docs/reference/api-reference/error-reference#' + e.code.toLowerCase() : e,
-          message: e.toString(),
-          req: req.body.name
-        })
-      }
-      break;
-    default:
-      // \u5982\u679C\u4E0D\u662F POST \u8BF7\u6C42\uFF0C\u4EE3\u8868\u4ED6\u6B63\u5728\u7528\u9519\u8BEF\u7684\u65B9\u5F0F\u8BBF\u95EE\u8FD9\u4E2A API
-      res.status(405).json({ error: 'Method not allowed' })
-  }
-}` }, { "path": "login", "id": "login", "file": "login.ts", "absPath": "/login", "__content": `import { UmiApiRequest, UmiApiResponse } from "umi";
+}` }, { "path": "register", "id": "register", "file": "register.ts", "absPath": "/register", "__content": "import type { UmiApiRequest, UmiApiResponse } from 'umi';\nimport { PrismaClient } from '@prisma/client';\nimport bcrypt from 'bcryptjs';\nimport { signToken } from '@/utils/jwt';\n\nexport default async function (req: UmiApiRequest, res: UmiApiResponse) {\n  switch (req.method) {\n    // \u5982\u679C\u5BF9\u8FD9\u4E2A\u8DEF\u5F84\u53D1\u8D77 POST \u8BF7\u6C42\uFF0C\u4EE3\u8868\u4ED6\u60F3\u8981\u6CE8\u518C\u4E00\u4E2A\u8D26\u53F7\n    case 'POST':\n      try {\n        // \u5EFA\u7ACB\u4E00\u4E2A Prisma \u5BA2\u6237\u7AEF\uFF0C\u4ED6\u53EF\u4EE5\u5E2E\u52A9\u6211\u4EEC\u8FDE\u7EBF\u5230\u6570\u636E\u5E93\n        const prisma = new PrismaClient();\n\n        // \u5728\u6570\u636E\u5E93\u7684 User \u8868\u4E2D\u5EFA\u7ACB\u4E00\u4E2A\u65B0\u7684\u6570\u636E\n        // const user = await prisma.user.create\n        // const user = await prisma.user.create({\n        //   data: {\n        //     email: req.body.email,\n\n        //     // \u5BC6\u7801\u662F\u7ECF\u8FC7 bcrypt \u52A0\u5BC6\u7684\n        //     passwordHash: bcrypt.hashSync(req.body.password, 8),\n        //     name: req.body.name,\n        //     avatarUrl: req.body.avatarUrl\n        //   }\n        // });\n        const user = await prisma.user.upsert({\n          where: { email: req.body.email },\n          update: {},\n          create: {\n            email: req.body.email,\n            // \u5BC6\u7801\u662F\u7ECF\u8FC7 bcrypt \u52A0\u5BC6\u7684\n            passwordHash: bcrypt.hashSync(req.body.password, 8),\n            name: req.body.name,\n            avatarUrl: req.body.avatarUrl,\n          },\n        });\n\n        // \u628A\u5EFA\u7ACB\u6210\u529F\u7684\u7528\u6237\u6570\u636E\uFF08\u4E0D\u5305\u542B\u5BC6\u7801\uFF09\u548C JWT \u56DE\u4F20\u7ED9\u524D\u7AEF\n        res\n          .status(200)\n          .setCookie('token', await signToken(user.id))\n          .json({ ...user, passwordHash: undefined });\n\n        // \u5904\u7406\u5B8C\u8BF7\u6C42\u4EE5\u540E\u8BB0\u5F97\u65AD\u5F00\u6570\u636E\u5E93\u94FE\u63A5\n        await prisma.$disconnect();\n      } catch (e: any) {\n        // \u5982\u679C\u53D1\u751F\u672A\u9884\u671F\u7684\u9519\u8BEF\uFF0C\u5C06\u5BF9\u5E94\u7684\u9519\u8BEF\u8BF4\u660E\u7684 Prisma \u6587\u6863\u53D1\u7ED9\u7528\u6237\n        res.status(500).json({\n          result: false,\n          // message: typeof e.code === 'string' ? 'https://www.prisma.io/docs/reference/api-reference/error-reference#' + e.code.toLowerCase() : e,\n          message: e.toString(),\n          req: req.body.name,\n        });\n      }\n      break;\n    default:\n      // \u5982\u679C\u4E0D\u662F POST \u8BF7\u6C42\uFF0C\u4EE3\u8868\u4ED6\u6B63\u5728\u7528\u9519\u8BEF\u7684\u65B9\u5F0F\u8BBF\u95EE\u8FD9\u4E2A API\n      res.status(405).json({ error: 'Method not allowed' });\n  }\n}\n" }, { "path": "login", "id": "login", "file": "login.ts", "absPath": "/login", "__content": `import { UmiApiRequest, UmiApiResponse } from "umi";
 import { PrismaClient } from '@prisma/client'
 import bcrypt from "bcryptjs";
 import { signToken } from "@/utils/jwt";
